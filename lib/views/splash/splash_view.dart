@@ -3,8 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:trading_journal/data/repository/contact/contact_repositories_impl.dart';
-import 'package:trading_journal/data/repository/setting/setting_repositories_impl.dart';
+
 import 'package:trading_journal/utils/assets_list.dart';
 import 'package:trading_journal/utils/colors.dart';
 import 'package:trading_journal/utils/text_enum.dart';
@@ -12,11 +11,8 @@ import 'package:trading_journal/views/home/provider/home_provider.dart';
 import 'package:trading_journal/views/home/ui/home_view.dart';
 import 'package:trading_journal/widgets/text.dart';
 
-import '../../data/models/contact_response.dart';
-import '../../data/models/list_setting_response.dart';
 import '../../utils/secure_storage_utils.dart';
 import '../../utils/strings.dart';
-import '../login/ui/login_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -122,69 +118,8 @@ class _SplashViewState extends State<SplashView>
 
   // ignore: long-method
   Future init() async {
-    final SettingRepositoriesImpl settingRepo = SettingRepositoriesImpl();
-    final ContactRepositoriesImpl contactRepo = ContactRepositoriesImpl();
     setState(() {
       message = "Sedang melakukan pengecekan data";
-    });
-    final result = await settingRepo.listSetting();
-
-    result.fold((l) async {
-      if (await SecureStorageUtils.getRunningText() == null) {
-        setState(() {
-          message = "Gagal mengambil data, mengulangi kembali.";
-        });
-        await Future.delayed(const Duration(seconds: 1));
-        await init();
-      }
-    }, (r) async {
-      final ListSetting? setting = r?.data?[0];
-      if (setting != null) {
-        await SecureStorageUtils.setRunningText(
-          setting.runningText ?? "",
-        );
-        await SecureStorageUtils.setLinkKlikPopUp(
-          setting.linkKlikPopup ?? "",
-        );
-        await SecureStorageUtils.setPopUp(
-          setting.popup ?? "",
-        );
-        await SecureStorageUtils.setRules(
-          setting.rules ?? "",
-        );
-        await SecureStorageUtils.setIdLiveChat(
-          setting.idLivechat ?? "",
-        );
-      } else {
-        setState(() {
-          message = "Gagal mengambil data, mengulangi kembali.";
-        });
-        await Future.delayed(const Duration(seconds: 1));
-        await init();
-      }
-    });
-    final resultContact = await contactRepo.listContact();
-
-    resultContact.fold((l) async {
-      if (await SecureStorageUtils.getRunningText() == null) {
-        setState(() {
-          message = "Gagal mengambil data, mengulangi kembali.";
-        });
-        await Future.delayed(const Duration(seconds: 1));
-        await init();
-      }
-    }, (r) async {
-      final List<ContactModel>? listKontak = r?.data;
-      if (listKontak != null) {
-        Provider.of<HomeProvider>(context, listen: false).listContact =
-            listKontak;
-      } else {
-        setState(() {
-          message = "Gagal mengambil data, mengulangi kembali.";
-        });
-        await Future.delayed(const Duration(seconds: 1));
-        await init();
-      }
     });
   }
 }

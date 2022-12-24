@@ -3,11 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
 import 'package:trading_journal/utils/colors.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
-import '../views/ads_controlling/provider/ads_controlling_provider.dart';
 
 class WebViewDsiplay extends StatefulWidget {
   final String link;
@@ -20,16 +17,7 @@ class WebViewDsiplay extends StatefulWidget {
 class WebViewDsiplayState extends State<WebViewDsiplay> {
   Timer? timer;
 
-  Future init() async {
-    final providerAds = Provider.of<AdsControllingProvider>(
-      context,
-      listen: false,
-    );
-    timer = providerAds.getTimer(
-      buildContext: context,
-      screenName: "WebView",
-    );
-  }
+  Future init() async {}
 
   @override
   void initState() {
